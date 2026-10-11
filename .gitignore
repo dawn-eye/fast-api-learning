@@ -1,0 +1,19 @@
+# Python 编译缓存
+__pycache__/
+*.py[cod]
+
+# 虚拟环境（绝对不要传上去，里面几万个文件）
+.venv/
+venv/
+env/
+
+# 数据库本地文件/敏感配置
+*.sqlite3
+.env
+.env.*
+
+# PyCharm 配置
+.idea/
+
+# 系统文件
+.DS_Store
