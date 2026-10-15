@@ -43,4 +43,15 @@ async def get_related_news(db:AsyncSession,news_id,category_id, limit:int = 5):
         News.publish_time.desc() #按照创建时间降序
     ).limit(limit)
     result = await db.execute(stet)
-    return result.scalars().all()
+    # return result.scalars().all()
+    related_news = result.scalars().all()
+    #列表推导式 推导出新闻的核心数据,然后再return
+    return [{
+        "id": news_detail.id,
+    "title": news_detail.title,
+    "content": news_detail.content,
+    "image": news_detail.image,
+    "author": news_detail.author,
+    "publishTime": news_detail.publish_time,
+    "categoryId": news_detail.category_id,
+    "views": news_detail.views,} for news_detail in related_news]
