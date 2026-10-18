@@ -1,6 +1,4 @@
 import bcrypt
-from passlib.context import CryptContext
-
 
 def get_hash_password(password: str) -> str:
     # bcrypt 只处理前 72 字节，超长要先截断
