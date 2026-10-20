@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from routers import news, users
+from utils.exception_handlers import register_exception_handlers
 
 # 静态资源目录：swagger-ui 的 js/css/图标都放在这里，不再依赖国外 CDN
 # 用 Path(__file__).parent 而不是相对路径，这样从任何目录启动 uvicorn 都能找到
@@ -14,6 +15,9 @@ STATIC_DIR = Path(__file__).parent / "static"
 # 自带文档页引用的 js/css 都在 cdn.jsdelivr.net 上，国内经常连不上，会白屏
 # 所以下面用 get_swagger_ui_html 自己生成一个指向本地文件的文档页
 app = FastAPI(docs_url=None, redoc_url=None)
+
+#注册异常处理器
+register_exception_handlers(app)
 
 #后续上线可以限制来源
 #origins = []
