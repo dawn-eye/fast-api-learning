@@ -29,7 +29,7 @@ async def create_user(user_data:UserRequest, db: AsyncSession):
 async def create_token(db:AsyncSession,user_id:int):
     # 生成 Token + 设置过期时间->查询数据库当前用户是否有Token ->有：更新; 没有：添加
     token = str(uuid.uuid4())
-    expires_at = datetime.now() + timedelta(minutes=30)
+    expires_at = datetime.now() + timedelta(days=7)
     query = select(UserToken).where(UserToken.user_id == user_id)
     result = await db.execute(query)
     user_token = result.scalar_one_or_none()
