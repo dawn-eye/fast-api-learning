@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timedelta
-from http.client import HTTPException
 
+from fastapi import HTTPException
 from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.news import Category,News

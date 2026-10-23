@@ -35,14 +35,14 @@ async def increase_news_views(db:AsyncSession,news_id:int):
 
 
 async def get_related_news(db:AsyncSession,news_id,category_id, limit:int = 5):
-    stet = select(News).where(
+    stmt = select(News).where(
         News.category_id == category_id,
         News.id != news_id
     ).order_by(
         News.views.desc(), #按照播放量降序
         News.publish_time.desc() #按照创建时间降序
     ).limit(limit)
-    result = await db.execute(stet)
+    result = await db.execute(stmt)
     # return result.scalars().all()
     related_news = result.scalars().all()
     #列表推导式 推导出新闻的核心数据,然后再return

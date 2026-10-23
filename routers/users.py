@@ -64,10 +64,10 @@ async def update_user_info(
 
 @router.put("/password")
 async def update_password(
-        passwprd_data:UserChangePasswordRequest,
+        password_data:UserChangePasswordRequest,
         user:User = Depends(get_current_user),
         db : AsyncSession = Depends(get_db)):
-   res_change_pwd = await users.change_password(passwprd_data.old_password,passwprd_data.new_password,user,db)
+   res_change_pwd = await users.change_password(password_data.old_password,password_data.new_password,user,db)
    if not res_change_pwd:
       raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="密码修改失败，请稍后再试")
    return succsess_response(message="密码修改成功")

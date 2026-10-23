@@ -27,8 +27,8 @@ async def get_categories(skip :int = 0, limit :int = 100,db:AsyncSession = Depen
 @router.get("/list")
 async def get_news_list_by_category(
         category_id: int = Query(..., alias="categoryId"),
-        page: int = 1,
-        page_size: int = Query(10, alias="pageSize", le=100),
+        page: int = Query(1,ge=1),
+        page_size: int = Query(10, alias="pageSize",ge=1, le=100),
         db: AsyncSession = Depends(get_db)):
     #查询的是指定分类下的所有新闻
     offset = (page - 1) * page_size
@@ -38,7 +38,7 @@ async def get_news_list_by_category(
     has_more = (offset + len(news_list)) < total
     return {
         "code": 200,
-        "message": "获取新闻详情成功",
+        "message": "获取新闻列表成功",
         "data": {
                     "list": news_list,
                     "total": total,
