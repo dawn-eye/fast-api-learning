@@ -32,7 +32,7 @@ async def get_news_list_by_category(
         db: AsyncSession = Depends(get_db)):
     #查询的是指定分类下的所有新闻
     offset = (page - 1) * page_size
-    news_list = await news.get_news_detail(db, category_id, offset, page_size)
+    news_list = await news.get_news_list_by_category(db, category_id, offset, page_size)
     total = await news.get_news_count(db, category_id)
     # 跳过的+当前列表的数量是否小于总量<总量
     has_more = (offset + len(news_list)) < total
@@ -48,7 +48,7 @@ async def get_news_list_by_category(
 @router.get("/detail")
 async def get_news_detail(news_id:int = Query(...,alias="id"),db:AsyncSession = Depends(get_db)):
     #获取新闻详情 + 浏览量+1 +相关新闻
-    news_detail = await news.get_news_detail_isnull(db,news_id)
+    news_detail = await news.get_news_detail(db, news_id)
     if not news_detail:
         raise HTTPException(status_code=404, detail="新闻不存在")
 

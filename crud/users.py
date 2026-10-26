@@ -21,7 +21,7 @@ async def create_user(user_data:UserRequest, db: AsyncSession):
     secu = security.get_hash_password(user_data.password)
     user = User(username=user_data.username, password=secu)
     db.add(user)
-    await db.commit()
+    #await db.commit()
     await db.refresh(user) #从数据库读回最新的 user
     return user
 
@@ -41,7 +41,7 @@ async def create_token(db:AsyncSession,user_id:int):
     else:
         user_token = UserToken(user_id=user_id, token=token, expires_at=expires_at)
         db.add(user_token)
-    await db.commit()
+    #await db.commit()
 
     return token
 
@@ -77,7 +77,7 @@ async def update_user(user_data:UserUpdateRequest, username:str, db:AsyncSession
         exclude_none=True
     ))
     result = await db.execute(query)
-    await db.commit()
+    #await db.commit()
 
     #检查更新
     if result.rowcount == 0:
