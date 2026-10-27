@@ -97,6 +97,7 @@ async def change_password(old_password:str,new_password:str,user:User,db:AsyncSe
     #更新:由SQLAlchemy 真正接管这个User对象,确保可以 commit
     #规避 session 过期或关闭导致的不能提交的问题
     db.add(user)
-    await db.commit()
+    #await db.commit()
+    await db.flush() #只提交到数据库,不刷新 session
     await db.refresh(user)
     return True
