@@ -4,7 +4,7 @@ from starlette import status
 
 from config.db_config import get_db
 from models.users import User
-from schemas.favorite import FavoriteCheckresponse, FavoriteAddResponse
+from schemas.favorite import FavoriteCheckresponse, FavoriteAddResponse, FavoriteListResponse
 from utils.auth import get_current_user
 from utils.response import success_response
 from crud import favorite
@@ -43,3 +43,21 @@ async def remove_favorite(
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="新闻不存在")
     return success_response(message="删除收藏成功")
+
+@router.get("/list")
+async def get_favorite_list(
+        user:User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db),
+        page: int =Query(1,ge=1),
+        page_size: int = Query(10,ge=1,le=100,alias="pageSize")
+):
+    rows,total= await favorite.get_favorite_list(db, user.id, page, page_size)
+    favorite_list = [{
+        **news.__dict__,
+        "favoriteTime": favorite_time,
+        "favoriteId": favorite_id
+    }for news, favorite_time, favorite_id in rows]
+    has_more = total > page * page_size
+
+    data = FavoriteListResponse(list =favorite_list,total= total,hasMore=has_more)
+    return success_response(message="获取收藏列表成功",data = data)
