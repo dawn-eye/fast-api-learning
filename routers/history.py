@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config.db_config import get_db
 from crud import history
 from models.users import User
-from schemas.history import HistoryAddRequest, HistoryItemResponse
+from schemas.history import HistoryAddRequest, HistoryItemResponse, HistoryListResponse
 from utils.auth import get_current_user
 from utils.response import success_response
 
@@ -27,4 +27,13 @@ async def get_history_list(
         user: User = Depends(get_current_user),
         db:AsyncSession = Depends(get_db)
 ):
-    pass
+    rows, total = await history.get_history_list(db, user.id, page, page_size)
+    history_list = [{
+        **news.__dict__,
+        "viewTime": view_time
+    }for news,view_time in rows]
+    has_more = total > page * page_size
+
+    data = HistoryListResponse(list=history_list,total=total,hasMore=has_more)
+    return success_response(message="获取浏览记录成功" ,data = data)
+

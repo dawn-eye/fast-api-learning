@@ -31,3 +31,33 @@ async def add_history(
 
     return history_record
 
+#获取浏览列表 --->获取用户的浏览列表  + 分页功能
+async def get_history_list(
+        db:AsyncSession,
+        user_id:int,
+        page:int = 1,
+        page_size:int = 10
+):
+    #总量 + 浏览记录列表
+    count_query = select(func.count()).where(History.user_id == user_id)
+    result = await db.execute(count_query)
+    total = result.scalar_one()
+
+    #获取浏览列表 - 联表查询 join() + 收藏时间排序 + 分页
+    """
+    查询最后得到的东西
+    [
+      (新闻对象，收藏对象，收藏id)
+    ]
+    """
+
+    query = (select(News,History.id.label("history_id"))
+               .join(History,History.news_id == News.id)
+               .where(History.user_id == user_id )
+               .order_by(History.view_time.desc())
+               .offset((page - 1) * page_size)
+               .limit(page_size))
+
+    result = await db.execute(query)
+    rows = result.all()
+    return rows,total
