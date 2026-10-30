@@ -51,7 +51,7 @@ async def get_history_list(
     ]
     """
 
-    query = (select(News,History.id.label("history_id"))
+    query = (select(News, History.view_time.label("view_time"))
                .join(History,History.news_id == News.id)
                .where(History.user_id == user_id )
                .order_by(History.view_time.desc())
@@ -61,3 +61,14 @@ async def get_history_list(
     result = await db.execute(query)
     rows = result.all()
     return rows,total
+
+
+
+async def delete_history(
+        db:AsyncSession,
+        user_id:int,
+        news_id:int
+):
+  stmt =  delete(History).where(History.user_id == user_id, History.news_id == news_id)
+  result = await db.execute(stmt)
+  return result.rowcount > 0
