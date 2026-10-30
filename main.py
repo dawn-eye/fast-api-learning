@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
-from routers import news, users, favorite
+from routers import news, users, favorite, history
 from utils.exception_handlers import register_exception_handlers
 
 # 静态资源目录：swagger-ui 的 js/css/图标都放在这里，不再依赖国外 CDN
@@ -56,3 +56,4 @@ async def root():
 app.include_router(news.router)
 app.include_router(users.router)
 app.include_router(favorite.router)
+app.include_router(history.router)
