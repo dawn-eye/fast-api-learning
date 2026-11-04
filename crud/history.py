@@ -72,3 +72,11 @@ async def delete_history(
   stmt =  delete(History).where(History.user_id == user_id, History.news_id == news_id)
   result = await db.execute(stmt)
   return result.rowcount > 0
+
+async def clear_history(
+        db:AsyncSession,
+        user_id:int
+):
+    stmt =  delete(History).where(History.user_id == user_id)
+    result = await db.execute(stmt)
+    return result.rowcount > 0

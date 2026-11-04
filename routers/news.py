@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.db_config import get_db
-from crud import news
+from crud import news,news_cache
 
 #创建 APIRouter 实例
 #prefix 路由前缀(API 接口规范文档)
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/api/news", tags=["news"])
 @router.get("/categories")
 async def get_categories(skip :int = 0, limit :int = 100,db:AsyncSession = Depends(get_db)):
     # 先获取数据库里面新闻分类数据 -> 先定义模型类 -> 封装查询数据的方法
-    categories = await news.get_categories(db,skip,limit)
+    categories = await news_cache.get_categories(db,skip,limit)
     return  {
         "code":200,
         "message":"获取新闻分类成功",
@@ -32,7 +32,7 @@ async def get_news_list_by_category(
         db: AsyncSession = Depends(get_db)):
     #查询的是指定分类下的所有新闻
     offset = (page - 1) * page_size
-    news_list = await news.get_news_list_by_category(db, category_id, offset, page_size)
+    news_list = await news_cache.get_news_list_by_category(db, category_id, offset, page_size)
     total = await news.get_news_count(db, category_id)
     # 跳过的+当前列表的数量是否小于总量<总量
     has_more = (offset + len(news_list)) < total

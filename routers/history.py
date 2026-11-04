@@ -52,3 +52,15 @@ async def delete_history(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="新闻不存在")
 
     return success_response(message="删除成功")
+
+@router.delete("/clear")
+async def clear_history(
+        db:AsyncSession = Depends(get_db),
+        user: User = Depends(get_current_user)
+):
+
+    result = await history.clear_history(db, user.id)
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="新闻不存在")
+
+    return success_response(message=f"清理了{result}条历史记录")
